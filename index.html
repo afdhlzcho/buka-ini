@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our First Year - Digital Scrapbook</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;500;600&family=Pacifico&family=Great+Vibes&family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-cream: #F6F1E9;
+            --beige-coffee: #E3D2C3;
+            --sage-green: #A8B5A2;
+            --light-brown: #9C7A5A;
+            --linen-gray: #D6D0C8;
+            --gold-matte: #C2A661;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--warm-cream);
+            color: var(--light-brown);
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with subtle parallax effect */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--warm-cream) 0%, var(--beige-coffee) 100%);
+            z-index: -2;
+        }
+
+        .background::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://picsum.photos/seed/papertexture/1200/800.jpg');
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--gold-matte);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Book container */
+        .book-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 650px;
+            position: relative;
+            perspective: 2000px;
+            margin: 20px auto;
+        }
+
+        /* Book */
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .book.open {
+            transform: rotateY(-5deg);
+        }
+
+        /* Book pages */
+        .book-pages {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .page-spread {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            position: relative;
+        }
+
+        .page {
+            width: 50%;
+            height: 100%;
+            background-color: var(--warm-cream);
+            position: relative;
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        .page-left {
+            border-radius: 15px 0 0 15px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+        .page-right {
+            border-radius: 0 15px 15px 0;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .page::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://picsum.photos/seed/papertexture/600/800.jpg');
+            opacity: 0.07;
+            pointer-events: none;
+        }
+
+        .page-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+        }
+
+        /* Custom scrollbar */
+        .page-content::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .page-content::-webkit-scrollbar-track {
+            background: var(--linen-gray);
+            border-radius: 10px;
+        }
+
+        .page-content::-webkit-scrollbar-thumb {
+            background: var(--sage-green);
+            border-radius: 10px;
+        }
+
+        /* Cover page */
+        .cover {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: linear-gradient(135deg, var(--beige-coffee) 0%, var(--linen-gray) 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform-origin: left center;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-style: preserve-3d;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://picsum.photos/seed/leathertexture/900/600.jpg');
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .cover.open {
+            transform: rotateY(-180deg);
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .cover-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            color: var(--light-brown);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .cover-subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--light-brown);
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .open-book-btn {
+            background-color: var(--sage-green);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+        }
+
+        .open-book-btn:hover {
+            background-color: var(--light-brown);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Memory page elements */
+        .memory-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--light-brown);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .memory-photo {
+            width: 80%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            display: block;
+            position: relative;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-photo:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .memory-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--light-brown);
+        }
+
+        /* Tape effect */
+        .tape {
+            position: absolute;
+            width: 80px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: rotate(-5deg);
+        }
+
+        .tape-top-left {
+            top: -10px;
+            left: -10px;
+        }
+
+        .tape-top-right {
+            top: -10px;
+            right: -10px;
+            transform: rotate(5deg);
+        }
+
+        /* Stickers */
+        .sticker {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .sticker-1 {
+            top: 20px;
+            right: 30px;
+            transform: rotate(15deg);
+        }
+
+        .sticker-2 {
+            bottom: 30px;
+            left: 20px;
+            transform: rotate(-10deg);
+        }
+
+        /* Video page */
+        .video-container {
+            width: 80%;
+            max-width: 400px;
+            height: 250px;
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Countdown page */
+        .countdown-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .countdown-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            color: var(--light-brown);
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Final page - FIXED */
+        .final-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--light-brown);
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.2;
+            word-wrap: break-word;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .final-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: center;
+            margin: 30px 0;
+            color: var(--light-brown);
+            max-width: 90%;
+        }
+
+        .final-photo {
+            width: 70%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            display: block;
+            filter: blur(5px);
+            transition: filter 3s ease;
+        }
+
+        .final-photo.show {
+            filter: blur(0);
+        }
+
+        .light-effect {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: light 5s infinite;
+        }
+
+        @keyframes light {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* Navigation buttons */
+        .nav-btn {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--sage-green);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--light-brown);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .prev-btn {
+            left: 30px;
+            right: auto;
+        }
+
+        .restart-btn {
+            background-color: var(--gold-matte);
+        }
+
+        .restart-btn:hover {
+            background-color: var(--light-brown);
+        }
+
+        /* Progress indicator - FIXED */
+        .progress-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(156, 122, 90, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background-color: var(--light-brown);
+            transform: scale(1.3);
+        }
+
+        /* Music control - FIXED */
+        .music-control {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: rgba(168, 181, 162, 0.8);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .music-control:hover {
+            background-color: var(--sage-green);
+            transform: scale(1.1);
+        }
+
+        /* Special elements for emotional impact */
+        .love-quote {
+            font-family: 'Sacramento', cursive;
+            font-size: 1.5rem;
+            color: var(--light-brown);
+            text-align: center;
+            margin: 20px 0;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .handwritten-note {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.2rem;
+            color: var(--light-brown);
+            transform: rotate(-2deg);
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .polaroid {
+            width: 80%;
+            max-width: 300px;
+            background-color: white;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            transform: rotate(3deg);
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: auto;
+        }
+
+        .polaroid-caption {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+            color: var(--light-brown);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .ticket {
+            width: 80%;
+            max-width: 300px;
+            background-color: var(--linen-gray);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 30%;
+            width: 2px;
+            height: 100%;
+            background: repeating-linear-gradient(to bottom, transparent, transparent 10px, var(--light-brown) 10px, var(--light-brown) 20px);
+        }
+
+        .ticket-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--light-brown);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .ticket-details {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .ticket-details div {
+            width: 45%;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .book-container {
+                width: 95%;
+                height: 500px;
+            }
+
+            .page {
+                padding: 20px;
+            }
+
+            .cover-title {
+                font-size: 3rem;
+            }
+
+            .cover-subtitle {
+                font-size: 1.5rem;
+            }
+
+            .memory-title {
+                font-size: 2rem;
+            }
+
+            .final-title {
+                font-size: 2.8rem;
+                padding: 0 10px;
+            }
+
+            .countdown-number {
+                font-size: 6rem;
+            }
+
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .prev-btn {
+                left: 20px;
+            }
+
+            .nav-btn:not(.prev-btn) {
+                right: 20px;
+            }
+
+            .progress-container {
+                gap: 6px;
+                padding: 8px 15px;
+            }
+
+            .progress-dot {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-container {
+                height: 450px;
+            }
+
+            .page {
+                padding: 15px;
+            }
+
+            .cover-title {
+                font-size: 2.5rem;
+            }
+
+            .cover-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .memory-title {
+                font-size: 1.8rem;
+            }
+
+            .final-title {
+                font-size: 2.2rem;
+                padding: 0 5px;
+            }
+
+            .countdown-number {
+                font-size: 5rem;
+            }
+
+            .music-control {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Page flip animation */
+        .page-flip-animation {
+            animation: pageFlip 0.8s ease-in-out;
+        }
+
+        @keyframes pageFlip {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(-180deg);
+            }
+        }
+
+        /* Hidden class for pages */
+        .hidden {
+            display: none;
+        }
+
+        /* Centered content for pages */
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Heart animation */
+        .heart {
+            color: var(--light-brown);
+            font-size: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Page number indicator */
+        .page-number {
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--light-brown);
+            opacity: 0.7;
+        }
+
+        .page-left .page-number {
+            left: 20px;
+        }
+
+        .page-right .page-number {
+            right: 20px;
+        }
+
+        /* Letter effect */
+        .letter {
+            width: 80%;
+            max-width: 350px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--light-brown);
+        }
+
+        .letter::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed var(--light-brown);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background-color: var(--sage-green);
+            opacity: 0.5;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            width: 45%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 55%;
+            text-align: left;
+        }
+
+        .timeline-date {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--light-brown);
+            margin-bottom: 5px;
+        }
+
+        .timeline-content {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--sage-green);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -6px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -6px;
+        }
+
+        /* Collage */
+        .collage {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .collage-item {
+            width: calc(50% - 10px);
+            max-width: 150px;
+            transform: rotate(var(--rotation));
+            transition: transform 0.3s ease;
+        }
+
+        .collage-item:hover {
+            transform: rotate(0) scale(1.05);
+        }
+
+        .collage-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background with particles -->
+    <div class="background"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Music control -->
+    <button class="music-control" id="musicControl">
+        <i class="fas fa-pause"></i>
+    </button>
+
+    <!-- Progress indicator -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+    </div>
+
+    <!-- Book container -->
+    <div class="book-container">
+        <div class="book" id="book">
+            <!-- Cover -->
+            <div class="cover" id="cover">
+                <div class="cover-content">
+                    <h1 class="cover-title">Our First Year</h1>
+                    <p class="cover-subtitle">A Little Love Story</p>
+                    <button class="open-book-btn" id="openBookBtn">Open The Book</button>
+                </div>
+            </div>
+
+            <!-- Book Pages Container -->
+            <div class="book-pages hidden" id="bookPages">
+                <!-- Page 1-2: Introduction -->
+                <div class="page-spread" id="spread1">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Cerita Kita Dimulai</h2>
+                            <div class="polaroid">
+                                <img src="foto dan video/IMG-20250208-WA0009.jpg" alt="First meeting">
+                                <div class="polaroid-caption">Pertama kali kita bertemu</div>
+                            </div>
+                            <p class="memory-text">Hari itu biasa saja, tapi takdir punya rencana lain. Senyummu yang pertama kali kulihat masih terngiang jelas di benakku, seperti melodi indah yang tak pernah hilang.</p>
+                            <div class="handwritten-note">Aku tahu saat itu juga, ada sesuatu yang spesial tentangmu.</div>
+                            <div class="page-number">1</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content">
+                            <div class="tape tape-top-right"></div>
+                            <h2 class="memory-title">Perasaan Pertama</h2>
+                            <img src="foto dan video/IMG-20250210-WA0005.jpg" alt="First feeling" class="memory-photo">
+                            <p class="memory-text">Jantungku berdegup lebih kencang saat kau tersenyum. Dunia seolah berhenti sejenak, hanya ada aku dan kamu dalam ruangan itu. Perasaan aneh namun indah mulai tumbuh di hatiku.</p>
+                            <div class="love-quote">"Cinta datang tanpa peringatan, namun meninggalkan jejak yang tak terhapuskan."</div>
+                            <div class="page-number">2</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn" id="nextSpread1">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Page 3-4: First Date -->
+                <div class="page-spread hidden" id="spread2">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Kencan Pertama</h2>
+                            <img src="https://picsum.photos/seed/firstdate/350/250.jpg" alt="First date" class="memory-photo">
+                            <p class="memory-text">Gugup, bahkan mungkin terlalu gugup. Tapi saat tawamu mengisi ruangan, aku tahu ini bukan sekadar kencan biasa. Ini adalah awal dari sesuatu yang istimewa.</p>
+                            <div class="ticket">
+                                <div class="ticket-title">Bioskop Minggu Malam</div>
+                                <div class="ticket-details">
+                                    <div>Film: "The Notebook"</div>
+                                    <div>Waktu: 19:30</div>
+                                </div>
+                            </div>
+                            <div class="page-number">3</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content">
+                            <div class="tape tape-top-right"></div>
+                            <h2 class="memory-title">Obrolan Pertama</h2>
+                            <div class="letter">
+                                Sayang,
+                                <br><br>
+                                Masih ingat malam itu? Kita berbicara berjam-jam tentang hal-hal sepele yang ternyata sangat berarti. Aku merasa seperti mengenalmu selamanya.
+                                <br><br>
+                                Dari malam itu, aku tahu aku ingin lebih banyak menghabiskan waktu denganmu.
+                                <br><br>
+                                <span style="text-align: right; display: block;">- Seseorang yang jatuh cinta</span>
+                            </div>
+                            <div class="handwritten-note">Tawa kita adalah melodi terindah</div>
+                            <div class="page-number">4</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn prev-btn" id="prevSpread2">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="nav-btn" id="nextSpread2">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Page 5-6: Getting Closer -->
+                <div class="page-spread hidden" id="spread3">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Momen-Momen Kecil</h2>
+                            <div class="collage">
+                                <div class="collage-item" style="--rotation: -5deg;">
+                                    <img src="foto dan video/IMG-20250210-WA0006.jpg" alt="Moment 1">
+                                </div>
+                                <div class="collage-item" style="--rotation: 3deg;">
+                                    <img src="foto dan video/IMG-20250210-WA0007.jpg" alt="Moment 2">
+                                </div>
+                                <div class="collage-item" style="--rotation: 2deg;">
+                                    <img src="foto dan video/IMG-20250212-WA0043.jpg" alt="Moment 3">
+                                </div>
+                                <div class="collage-item" style="--rotation: -3deg;">
+                                    <img src="foto dan video/IMG-20250216-WA0015.jpg" alt="Moment 4">
+                                </div>
+                            </div>
+                            <p class="memory-text">Bukan hal-hal besar yang membuat cinta kita istimewa, melainkan ribuan momen kecil yang kita kumpulkan setiap hari.</p>
+                            <div class="page-number">5</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content">
+                            <div class="tape tape-top-right"></div>
+                            <h2 class="memory-title">Perjalanan Kita</h2>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-date">15 Maret</div>
+                                    <div class="timeline-content">Pertemuan pertama</div>
+                                    <div class="timeline-dot"></div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-date">22 April</div>
+                                    <div class="timeline-content">Kencan pertama</div>
+                                    <div class="timeline-dot"></div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-date">10 Mei</div>
+                                    <div class="timeline-content">Piknik pertama</div>
+                                    <div class="timeline-dot"></div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-date">28 Juni</div>
+                                    <div class="timeline-content">Jadian!</div>
+                                    <div class="timeline-dot"></div>
+                                </div>
+                            </div>
+                            <div class="page-number">6</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn prev-btn" id="prevSpread3">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="nav-btn" id="nextSpread3">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Page 7-8: Special Moments -->
+                <div class="page-spread hidden" id="spread4">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Liburan Pertama</h2>
+                            <img src="foto dan video/IMG-20250217-WA0012.jpg" alt="Vacation" class="memory-photo">
+                            <p class="memory-text">Pantai, matahari terbenam, dan kamu di sisiku. Apa lagi yang bisa kuminta? Kebersamaan kita saat itu terasa seperti surga di bumi.</p>
+                            <div class="handwritten-note">Aku ingin lebih banyak liburan seperti ini denganmu</div>
+                            <div class="page-number">7</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content">
+                            <div class="tape tape-top-right"></div>
+                            <h2 class="memory-title">Momen Tak Terlupakan</h2>
+                            <div class="video-container">
+                                <video autoplay muted loop>
+                                    <source src="foto dan video/VID-20241221-WA0037.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <p class="memory-text">Beberapa momen terlalu indah untuk diungkapkan dengan kata-kata. Video ini hanya secuil dari ribuan tawa yang telah kita bagikan.</p>
+                            <div class="page-number">8</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn prev-btn" id="prevSpread4">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="nav-btn" id="nextSpread4">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Page 9-10: Growing Together -->
+                <div class="page-spread hidden" id="spread5">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Tumbuh Bersama</h2>
+                            <img src="foto dan video/IMG-20250222-WA0040.jpg" alt="Growing together" class="memory-photo">
+                            <p class="memory-text">Dari hari ke hari, bulan ke bulan, kita tumbuh bersama. Setiap tantangan membuat kita lebih kuat, setiap tawa membuat kita lebih dekat.</p>
+                            <div class="love-quote">"Cinta sejati bukan tentang tanpa masalah, tapi tentang bertahan dalam setiap masalah."</div>
+                            <div class="page-number">9</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content">
+                            <div class="tape tape-top-right"></div>
+                            <h2 class="memory-title">Janji Kecil</h2>
+                            <div class="letter">
+                                Sayangku,
+                                <br><br>
+                                Aku berjanji akan selalu ada untukmu, di saat senang maupun sedih. Aku berjanji akan menjadi tempat bersandarmu saat lelah, dan menjadi tawa saat kamu bahagia.
+                                <br><br>
+                                Aku berjanji akan mencintaimu lebih dalam setiap hari.
+                                <br><br>
+                                <span style="text-align: right; display: block;">Selamanya milikmu</span>
+                            </div>
+                            <div class="page-number">10</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn prev-btn" id="prevSpread5">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="nav-btn" id="nextSpread5">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Page 11-12: Through the Seasons -->
+                <div class="page-spread hidden" id="spread6">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Musim-Musim Cinta</h2>
+                            <div class="collage">
+                                <div class="collage-item" style="--rotation: -5deg;">
+                                    <img src="foto dan video/IMG-20250222-WA0040.jpg" alt="Spring">
+                                </div>
+                                <div class="collage-item" style="--rotation: 3deg;">
+                                    <img src="foto dan video/IMG-20250208-WA0009.jpg" alt="Summer">
+                                </div>
+                                <div class="collage-item" style="--rotation: 2deg;">
+                                    <img src="foto dan video/IMG-20250212-WA0043.jpg" alt="Autumn">
+                                </div>
+                                <div class="collage-item" style="--rotation: -3deg;">
+                                    <img src="foto dan video/IMG-20250210-WA0007.jpg" alt="Winter">
+                                </div>
+                            </div>
+                            <p class="memory-text">Seperti empat musim, cinta kita terus berubah namun tetap indah. Dari musim semi yang penuh harapan, hingga musim dingin yang menghangatkan.</p>
+                            <div class="page-number">11</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content">
+                            <div class="tape tape-top-right"></div>
+                            <h2 class="memory-title">Impian Kita</h2>
+                            <img src="foto dan video/IMG-20250217-WA0012.jpg" alt="Our dreams" class="memory-photo">
+                            <p class="memory-text">Aku bermimpi tentang masa depan kita. Rumah kecil dengan taman bunga, pagi hari dengan secangkir kopi, dan malam hari dengan pelukan hangat. Tapi yang terpenting, aku bermimpi tentang semua itu bersamamu.</p>
+                            <div class="handwritten-note">Denganmu, semua impian terasa mungkin</div>
+                            <div class="page-number">12</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn prev-btn" id="prevSpread6">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="nav-btn" id="nextSpread6">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Page 13: Countdown -->
+                <div class="page-spread hidden" id="spread7">
+                    <div class="page page-left">
+                        <div class="page-content">
+                            <div class="tape tape-top-left"></div>
+                            <h2 class="memory-title">Setahun Telah Berlalu</h2>
+                            <img src="https://picsum.photos/seed/yearpassed/350/250.jpg" alt="Year passed" class="memory-photo">
+                            <p class="memory-text">365 hari bersama, 8760 jam kebersamaan, 525600 menit kenangan. Waktu terasa berlalu begitu cepat saat aku bersamamu. Setiap hari adalah petualangan baru, setiap malam adalah mimpi indah.</p>
+                            <div class="love-quote">"Cinta tidak dihitung dari waktu yang dihabiskan bersama, tapi dari momen yang membuat waktu terasa berhenti."</div>
+                            <div class="page-number">13</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content countdown-container">
+                            <div class="countdown-number" id="countdownNumber">3</div>
+                            <div class="handwritten-note" style="margin-top: 30px;">Bersiaplah untuk kejutan terakhir...</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn prev-btn" id="prevSpread7">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <!-- Page 14: Final Message -->
+                <div class="page-spread hidden" id="spread8">
+                    <div class="page page-left">
+                        <div class="page-content centered-content">
+                            <div class="light-effect"></div>
+                            <h2 class="final-title">Aku Sayang Kamu</h2>
+                            <p class="final-text">Satu tahun telah berlalu, tapi rasanya seperti kemarin kita baru memulai. Setiap hari bersamamu adalah hadiah, setiap senyummu adalah kebahagiaan, setiap sentuhanmu adalah rumah.</p>
+                            <p class="final-text">Terima kasih telah menjadi bagian terindah dalam hidupku. Aku tidak bisa membayangkan menjalani hari-hariku tanpamu di samping.</p>
+                            <p class="final-text">Untuk tahun-tahun mendatang, aku berjanji akan terus mencintaimu lebih dalam setiap hari. Selamat ulang tahun percintaan kita, sayang.</p>
+                            <div class="page-number">14</div>
+                        </div>
+                    </div>
+                    <div class="page page-right">
+                        <div class="page-content centered-content">
+                            <img src="foto dan video/IMG-20250210-WA0005.jpg" alt="Special moment" class="final-photo" id="finalPhoto">
+                            <div class="handwritten-note">Untuk kita, dan untuk semua tahun yang akan datang</div>
+                            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                                <span class="heart" style="margin: 0 5px;">❤️</span>
+                                <span class="heart" style="margin: 0 5px;">❤️</span>
+                                <span class="heart" style="margin: 0 5px;">❤️</span>
+                            </div>
+                            <div class="page-number">15</div>
+                        </div>
+                    </div>
+                    <button class="nav-btn restart-btn" id="restartBtn">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio element for background music -->
+    <audio id="bgMusic" loop>
+        <source src="music/lany_-_nobody_else_(mp3.pm).mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+<script>
+        // DOM elements
+        const book = document.getElementById('book');
+        const cover = document.getElementById('cover');
+        const bookPages = document.getElementById('bookPages');
+        const openBookBtn = document.getElementById('openBookBtn');
+        const musicControl = document.getElementById('musicControl');
+        const bgMusic = document.getElementById('bgMusic');
+        const progressDots = document.querySelectorAll('.progress-dot');
+        const finalPhoto = document.getElementById('finalPhoto');
+        const countdownNumber = document.getElementById('countdownNumber');
+        
+        // Page spreads
+        const spread1 = document.getElementById('spread1');
+        const spread2 = document.getElementById('spread2');
+        const spread3 = document.getElementById('spread3');
+        const spread4 = document.getElementById('spread4');
+        const spread5 = document.getElementById('spread5');
+        const spread6 = document.getElementById('spread6');
+        const spread7 = document.getElementById('spread7');
+        const spread8 = document.getElementById('spread8');
+        
+        // Navigation buttons
+        const nextSpread1 = document.getElementById('nextSpread1');
+        const prevSpread2 = document.getElementById('prevSpread2');
+        const nextSpread2 = document.getElementById('nextSpread2');
+        const prevSpread3 = document.getElementById('prevSpread3');
+        const nextSpread3 = document.getElementById('nextSpread3');
+        const prevSpread4 = document.getElementById('prevSpread4');
+        const nextSpread4 = document.getElementById('nextSpread4');
+        const prevSpread5 = document.getElementById('prevSpread5');
+        const nextSpread5 = document.getElementById('nextSpread5');
+        const prevSpread6 = document.getElementById('prevSpread6');
+        const nextSpread6 = document.getElementById('nextSpread6');
+        const prevSpread7 = document.getElementById('prevSpread7');
+        const restartBtn = document.getElementById('restartBtn');
+        
+        // Current spread tracker
+        let currentSpread = 0;
+        let isPlaying = false;
+        
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 5 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                
+                // Random animation duration
+                particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Initialize particles
+        createParticles();
+        
+        // Open book
+        openBookBtn.addEventListener('click', () => {
+            cover.classList.add('open');
+            book.classList.add('open');
+            setTimeout(() => {
+                bookPages.classList.remove('hidden');
+                currentSpread = 1;
+                updateProgress();
+                playMusic();
+            }, 800);
+            
+            // Create page flip sound effect
+            playPageFlipSound();
+        });
+        
+        // Navigate to next spread
+        function nextSpread(currentSpreadElement, nextSpreadElement) {
+            currentSpreadElement.classList.add('hidden');
+            nextSpreadElement.classList.remove('hidden');
+            currentSpread++;
+            updateProgress();
+            
+            // Special handling for countdown spread
+            if (nextSpreadElement === spread7) {
+                startCountdown();
+            }
+            
+            // Special handling for final spread
+            if (nextSpreadElement === spread8) {
+                setTimeout(() => {
+                    finalPhoto.classList.add('show');
+                }, 1000);
+            }
+            
+            // Create page flip sound effect
+            playPageFlipSound();
+        }
+        
+        // Navigate to previous spread
+        function prevSpread(currentSpreadElement, prevSpreadElement) {
+            currentSpreadElement.classList.add('hidden');
+            prevSpreadElement.classList.remove('hidden');
+            currentSpread--;
+            updateProgress();
+            
+            // Create page flip sound effect
+            playPageFlipSound();
+        }
+        
+        // Page navigation event listeners
+        nextSpread1.addEventListener('click', () => {
+            nextSpread(spread1, spread2);
+        });
+        
+        prevSpread2.addEventListener('click', () => {
+            prevSpread(spread2, spread1);
+        });
+        
+        nextSpread2.addEventListener('click', () => {
+            nextSpread(spread2, spread3);
+        });
+        
+        prevSpread3.addEventListener('click', () => {
+            prevSpread(spread3, spread2);
+        });
+        
+        nextSpread3.addEventListener('click', () => {
+            nextSpread(spread3, spread4);
+        });
+        
+        prevSpread4.addEventListener('click', () => {
+            prevSpread(spread4, spread3);
+        });
+        
+        nextSpread4.addEventListener('click', () => {
+            nextSpread(spread4, spread5);
+        });
+        
+        prevSpread5.addEventListener('click', () => {
+            prevSpread(spread5, spread4);
+        });
+        
+        nextSpread5.addEventListener('click', () => {
+            nextSpread(spread5, spread6);
+        });
+        
+        prevSpread6.addEventListener('click', () => {
+            prevSpread(spread6, spread5);
+        });
+        
+        nextSpread6.addEventListener('click', () => {
+            nextSpread(spread6, spread7);
+        });
+        
+        prevSpread7.addEventListener('click', () => {
+            prevSpread(spread7, spread6);
+        });
+        
+        // Restart book
+        restartBtn.addEventListener('click', () => {
+            // Reset all spreads
+            spread1.classList.remove('hidden');
+            spread2.classList.add('hidden');
+            spread3.classList.add('hidden');
+            spread4.classList.add('hidden');
+            spread5.classList.add('hidden');
+            spread6.classList.add('hidden');
+            spread7.classList.add('hidden');
+            spread8.classList.add('hidden');
+            
+            // Reset cover
+            cover.classList.remove('open');
+            book.classList.remove('open');
+            bookPages.classList.add('hidden');
+            
+            // Reset final photo
+            finalPhoto.classList.remove('show');
+            
+            // Reset progress
+            currentSpread = 0;
+            updateProgress();
+            
+            // Create page flip sound effect
+            playPageFlipSound();
+        });
+        
+        // Update progress indicator
+        function updateProgress() {
+            progressDots.forEach((dot, index) => {
+                if (index === currentSpread) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        
+        // Music control - FIXED
+        musicControl.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicControl.innerHTML = '<i class="fas fa-play"></i>';
+                isPlaying = false;
+            } else {
+                bgMusic.play().catch(error => {
+                    console.log("Autoplay was prevented:", error);
+                });
+                musicControl.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            }
+        });
+        
+        function playMusic() {
+            bgMusic.play().catch(error => {
+                console.log("Autoplay was prevented:", error);
+            });
+            musicControl.innerHTML = '<i class="fas fa-pause"></i>';
+            isPlaying = true;
+        }
+        
+        // Page flip sound effect
+        function playPageFlipSound() {
+            // Create a simple page flip sound using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            // Create oscillator for paper rustle sound
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+        
+        // Countdown function (3-2-1)
+        function startCountdown() {
+            let count = 3;
+            
+            // Fade out music slightly
+            bgMusic.volume = 0.3;
+            
+            const countdownInterval = setInterval(() => {
+                // Fade out current number
+                countdownNumber.style.opacity = '0';
+                
+                setTimeout(() => {
+                    count--;
+                    
+                    if (count >= 1) {
+                        countdownNumber.textContent = count;
+                        // Fade in new number
+                        countdownNumber.style.opacity = '1';
+                    } else {
+                        // Clear interval and move to next spread
+                        clearInterval(countdownInterval);
+                        
+                        setTimeout(() => {
+                            nextSpread(spread7, spread8);
+                            // Restore music volume
+                            bgMusic.volume = 0.5;
+                        }, 1000);
+                    }
+                }, 500);
+            }, 1500);
+        }
+        
+        // Add subtle book animation
+        function animateBook() {
+            const bookElement = document.querySelector('.book');
+            
+            setInterval(() => {
+                // Random small movement
+                const randomX = (Math.random() - 0.5) * 2;
+                const randomY = (Math.random() - 0.5) * 2;
+                
+                bookElement.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                
+                setTimeout(() => {
+                    bookElement.style.transform = 'translate(0, 0)';
+                }, 1000);
+            }, 5000);
+        }
+        
+        // Start book animation
+        animateBook();
+        
+        // Add parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            const particles = document.querySelector('.particles');
+            particles.style.transform = `translate(${mouseX * 10}px, ${mouseY * 10}px)`;
+        });
+        
+        // Prevent scroll from changing pages
+        document
+</script>
+</html>
